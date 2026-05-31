@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <input type="number" id="price">
+    <input type="number" id="qty">
+    <button id="btn-count-local">calc :O</button>
+    <p id="totalHolder"></p>
+</body>
+<script>
+    const storeLocal = (cart) => {
+        let cartString = JSON.stringify(cart)
+        localStorage.setItem('cart', cartString)
+    }
+
+    const countTotal = (keyName) => {
+        const data = localStorage.getItem(keyName)
+        const parsedData = JSON.parse(data)
+        let total = 0
+
+        parsedData.forEach(e => {
+            total += e.price * e.quantity
+        })
+        const res = `Total cart value : Rp${total.toLocaleString()}`
+        $("#totalHolder").text(res)
+    }
+
+    const addData = (keyName) => {
+        // Read Data from UI
+        const price = $("#price").val()
+        const qty = $("#qty").val()
+        
+        // Get Data
+        const data = localStorage.getItem(keyName)
+        let parsedData = JSON.parse(data)
+        parsedData.push({
+            "price": price,
+            "quantity": qty
+        })
+
+        // Store Data
+        localStorage.setItem(keyName, JSON.stringify(parsedData))
+        countTotal(keyName)
+    }
+    
+    storeLocal([
+        {"price": 50000, "quantity": 2},
+        {"price": 120000, "quantity": 1},
+        {"price": 30000, "quantity": 3}
+    ])
+
+    countTotal("cart")
+
+    $(document).on("click", "#btn-count-local", function(){
+        addData("cart")
+    })
+</script>
+</html>
