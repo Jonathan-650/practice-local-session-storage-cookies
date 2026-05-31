@@ -47,12 +47,20 @@
         localStorage.setItem(keyName, JSON.stringify(parsedData))
         countTotal(keyName)
     }
-    
-    storeLocal([
-        {"price": 50000, "quantity": 2},
-        {"price": 120000, "quantity": 1},
-        {"price": 30000, "quantity": 3}
-    ])
+
+    const seed = (keyName) => {
+        const data = localStorage.getItem(keyName)
+        let parsedData = JSON.parse(data)
+
+        if (parsedData.length == 3) {
+            storeLocal([
+                {"price": 50000, "quantity": 2},
+                {"price": 120000, "quantity": 1},
+                {"price": 30000, "quantity": 3}
+            ])
+        }
+    }
+    seed("cart")
 
     countTotal("cart")
 
