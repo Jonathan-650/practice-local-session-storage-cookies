@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <input type="number" id="qty">
+    <button id="btn-count-session">calc :O</button>
+    <p id="totalHolder"></p>
+</body>
+<script>
+    const storesession = (ticket) => {
+        let ticketString = JSON.stringify(ticket)
+        sessionStorage.setItem('ticket', ticketString)
+    }
+
+    const countTotal = (keyName) => {
+        const data = sessionStorage.getItem(keyName)
+        const parsedData = JSON.parse(data)
+        let total = 0
+
+        parsedData.forEach(e => {
+            total += e * 50000
+        })
+        const res = `Total ticket value : Rp${total.toLocaleString()}`
+        $("#totalHolder").text(res)
+    }
+
+    const addData = (keyName) => {
+        // Read Data from UI
+        const qty = $("#qty").val()
+        
+        // Get Data
+        const data = sessionStorage.getItem(keyName)
+        let parsedData = JSON.parse(data)
+        parsedData.push(qty)
+
+        // Store Data
+        sessionStorage.setItem(keyName, JSON.stringify(parsedData))
+        countTotal(keyName)
+    }
+
+    const seed = (keyName) => {
+        const data = sessionStorage.getItem(keyName)
+        if (data == null) {
+            storesession([2,1,4])
+            return
+        }
+        let parsedData = JSON.parse(data)
+
+        if (parsedData.length == 3) {
+            storesession([2,1,4])
+        }
+    }
+    seed("ticket")
+
+    countTotal("ticket")
+
+    $(document).on("click", "#btn-count-session", function(){
+        addData("ticket")
+    })
+</script>
+</html>
