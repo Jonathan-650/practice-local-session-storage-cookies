@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <input type="username" id="user">
+    <input type="password" id="pass">
+    <button id="sign-in">try to get in</button>
+    <p id="message"></p>
+</body>
+<script>
+    // let date = new Date()
+    // date.setDate(date.getDate() + 1)
+    // document.cookie = `totalAttempt=1; expires=${date.toUTCString()}; path=/`
+
+    const readCookie = (name) => {
+        const cookies = document.cookie.split("; ")
+
+        for (let cookie of cookies) {
+            const [key, value] = cookie.split("=")
+            if (key === name) return value
+        }
+
+        return null
+    }
+
+    const login = () => {
+        const username = $("#user").val().trim()
+        const password = $("#pass").val().trim()
+
+        let date = new Date()
+        date.setDate(date.getDate() + 1)
+
+        if (username == "admin" && password == "1234") {
+            alert("you pass. good")
+            // reset amount of attempts
+            document.cookie = `totalAttempt=0; expires=${date.toUTCString()}; path=/`
+            location.reload()
+        } else {
+            // read old cookie
+            let total = readCookie("totalAttempt")
+            let totalInt
+            if (typeof total == "object") {
+                totalInt = 0
+            } else {
+                totalInt = parseInt(total)
+            }
+            
+            // update cookies?
+            document.cookie = `totalAttempt=${totalInt+1}; expires=${date.toUTCString()}; path=/`
+            location.reload()
+        }
+    }
+
+    const checkBlock = () => {
+        let total = readCookie("totalAttempt")
+        if (typeof total != "object" && total >= 3) {
+            $("#user").prop("disabled", true)
+            $("#pass").prop("disabled", true)
+            $("#sign-in").prop("disabled", true)
+            $("#message").text("out of tries. try again tommorow")
+        }
+        
+    }
+
+    checkBlock()
+
+    
+
+    $(document).on("click", "#sign-in", function(){
+        login()
+    })
+</script>
+</html>
